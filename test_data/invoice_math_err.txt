@@ -1,0 +1,15 @@
+INVOICE
+Vendor: Acme Software Solutions LLC (VENDOR-A)
+Invoice #: INV-2026-0455
+Invoice Date: 2026-09-30
+
+Services rendered, September 2026:
+- Technical Consultant - Dana Wu: 12 hours @ $100.00/hr = $1,400.00
+- Developer - Alice Chen: 40 hours @ $85.00/hr = $3,400.00
+- Project Manager - Sam Ortiz: 10.5 hours @ $95.00/hr = $997.52
+
+Subtotal: $5,797.52
+Discount: $0.00
+Sales Tax (8%): $463.80
+Total Due: $6,261.32
+Terms: Net 30

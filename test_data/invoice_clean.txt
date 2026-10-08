@@ -1,0 +1,14 @@
+INVOICE
+Vendor: Acme Software Solutions LLC (VENDOR-A)
+Invoice #: INV-2026-0412
+Invoice Date: 2026-09-30
+
+Services rendered, September 2026:
+- Developer - Alice Chen: 80 hours @ $85.00/hr = $6,800.00
+- Senior Architect - Raj Mehta: 20 hours @ $120.00/hr = $2,400.00
+
+Subtotal: $9,200.00
+Discount: $0.00
+Sales Tax (8%): $736.00
+Total Due: $9,936.00
+Terms: Net 30

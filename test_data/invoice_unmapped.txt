@@ -1,0 +1,14 @@
+INVOICE
+Vendor: Acme Software Solutions LLC (VENDOR-A)
+Invoice #: INV-2026-0533
+Invoice Date: 2026-09-30
+
+Services rendered, September 2026:
+- Developer - Alice Chen: 40 hours @ $85.00/hr = $3,400.00
+- Quantum Flux Calibration Services: 10 hours @ $150.00/hr = $1,500.00
+
+Subtotal: $4,900.00
+Discount: $0.00
+Sales Tax (8%): $392.00
+Total Due: $5,292.00
+Terms: Net 30

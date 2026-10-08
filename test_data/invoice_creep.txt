@@ -1,0 +1,14 @@
+INVOICE
+Vendor: Acme Software Solutions LLC (VENDOR-A)
+Invoice #: INV-2026-0501
+Invoice Date: 2026-09-30
+
+Services rendered, September 2026:
+- Developer - Alice Chen: 80 hours @ $95.00/hr = $7,600.00
+- Developer - Bob Patel: 105 hours @ $85.00/hr = $8,925.00
+
+Subtotal: $16,525.00
+Volume Discount (5%): $826.25
+Sales Tax (8%): $1,322.00
+Total Due: $17,020.75
+Terms: Net 30
