@@ -1,163 +1,901 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ledgerwise</title>
-<link rel="icon" href="data:,">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#F4F5F7;--sf:#fff;--ink:#111827;--mu:#667085;--ln:#E3E6EB;--hv:#F6F7FA;--pr:#2A3FB0;--prx:#fff;--side:#16213A;--sidet:#C5CCDB;--sideh:#232F4B;
---ok:#1F6E43;--okb:#D9F0E2;--okl:#6DBF92;--bad:#B3261E;--badb:#FBE4E1;--badl:#E58B85;--wn:#8A5F00;--wnb:#FCF0CF;--wnl:#DDB24A;--info:#2A3FB0;--infob:#E4E8FB;--infol:#8E9CEA;
---ui:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:ui-monospace,'Cascadia Code',Consolas,Menlo,monospace}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--ui);-webkit-font-smoothing:antialiased}
-button,input,select,textarea{font:inherit;color:inherit}a{color:var(--pr);text-decoration:none}
-:focus-visible{outline:2px solid var(--pr);outline-offset:2px}
-.app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
-aside{background:var(--side);color:var(--sidet);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-.ws{display:flex;align-items:center;gap:10px;padding:22px 20px;border-bottom:1px solid rgba(255,255,255,.08);color:#fff;font-weight:600;font-size:15px}
-nav{padding:14px 10px;flex:1}
-nav a{display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:7px;color:var(--sidet);font-weight:500;margin-bottom:2px}
-nav a[aria-current=page]{background:var(--sideh);color:#fff}nav a:hover{color:#fff}
-.sf{padding:16px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:12.5px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.sf:empty{display:none}.sf button{background:none;border:0;color:var(--sidet);cursor:pointer;font-size:16px;padding:2px 4px}
-.main{padding:36px 40px 60px}.wrap{max-width:1020px;margin:0 auto}.wrap.n{max-width:820px}
-.ph{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
-h1{margin:0;font-size:22px;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.sub{margin:2px 0 0;color:var(--mu)}h2{margin:28px 0 10px;font-size:14px;font-weight:600}
-.btn{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 16px;border-radius:7px;border:1px solid var(--ln);background:var(--sf);cursor:pointer;font-weight:500;color:var(--ink)}
-.btn.pri{background:var(--pr);border-color:var(--pr);color:var(--prx)}.btn.sm{height:30px;padding:0 12px;font-size:13px}.btn:disabled{opacity:.5}
-.card{background:var(--sf);border:1px solid var(--ln);border-radius:10px;overflow:hidden}.pad{padding:20px}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
-.kpi{padding:16px 18px}.kpi span{color:var(--mu);font-size:13px}.kpi b{display:block;font-size:26px;font-weight:600;margin-top:6px;font-variant-numeric:tabular-nums}
-.bar{display:flex;gap:12px;margin-bottom:14px}
-.bar input,.bar select,.fld input,.fld select{height:38px;padding:0 12px;border:1px solid var(--ln);border-radius:7px;background:var(--sf);color:var(--ink);width:100%}.bar input{max-width:280px}.bar select{width:auto}
-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-th{padding:12px 18px;font-size:12.5px;font-weight:500;color:var(--mu);text-align:left;border-bottom:1px solid var(--ln);background:var(--hv)}
-td{padding:13px 18px;border-bottom:1px solid var(--ln)}tr:last-child td{border:0}.r{text-align:right}
-tr.go{cursor:pointer}tr.go:hover td{background:var(--hv)}.go td:first-child a{font-weight:600}
-.badge{display:inline-block;padding:1px 8px;border:1px solid;border-radius:5px;font-size:12px;font-weight:600;line-height:20px;white-space:nowrap}
-.badge.ok{background:var(--okb);border-color:var(--okl);color:var(--ok)}.badge.bad{background:var(--badb);border-color:var(--badl);color:var(--bad)}
-.badge.wn{background:var(--wnb);border-color:var(--wnl);color:var(--wn)}.badge.info{background:var(--infob);border-color:var(--infol);color:var(--info)}
-.badge.mu{background:var(--hv);border-color:var(--ln);color:var(--mu)}
-.ban{padding:12px 16px;border-radius:8px;border:1px solid;margin-bottom:18px;display:flex;gap:10px;align-items:center}
-.ban.ok{background:var(--okb);border-color:var(--okl);color:var(--ok)}.ban.bad{background:var(--badb);border-color:var(--badl);color:var(--bad)}
-.ban.wn{background:var(--wnb);border-color:var(--wnl);color:var(--wn)}.ban.info{background:var(--infob);border-color:var(--infol);color:var(--info)}
-.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:18px 20px}.sum span{display:block;color:var(--mu);font-size:13px}.sum b{font-weight:500;font-size:15px}
-.fr{display:grid;grid-template-columns:auto 1fr auto;gap:14px;padding:14px 20px;border-bottom:1px solid var(--ln);align-items:start}.fr:last-child{border:0}
-.fr p{margin:2px 0 0;color:var(--mu);font-size:13px}.fr.dim{opacity:.7}.amt{font-weight:600;font-variant-numeric:tabular-nums}
-.chip{display:inline-block;margin-left:6px;padding:0 7px;border-radius:99px;background:var(--hv);border:1px solid var(--ln);font-size:12px;color:var(--ink);font-weight:500}
-details summary{cursor:pointer;color:var(--mu);font-size:12.5px;margin-top:4px}
-.neg{color:var(--bad);font-weight:600}.tot td{font-weight:600}
-pre.mail{white-space:pre-wrap;margin:0;padding:18px 20px;font:13px/1.7 var(--ui)}
-.hd{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid var(--ln);font-weight:600}
-.act{padding:12px 20px;border-bottom:1px solid var(--ln)}.act:last-child{border:0}.act>div{display:flex;justify-content:space-between;gap:16px}
-.act time{color:var(--mu);font-size:12.5px;white-space:nowrap}.act b{font-weight:600}
-.calls{margin-top:8px;border:1px solid var(--ln);border-radius:7px;max-height:240px;overflow:auto}
-.call{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,auto);gap:12px;padding:5px 10px;border-bottom:1px solid var(--ln);font:12px/1.5 var(--mono)}.call:last-child{border:0}
-.call .fn{color:var(--pr);font-weight:600}.call .ar{color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.call .rs{text-align:right;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--infol);border-top-color:var(--info);border-radius:50%;animation:s .8s linear infinite;margin-right:8px;vertical-align:-1px}@keyframes s{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.spin{animation:none}}
-.drop{display:block;border:1.5px dashed var(--ln);border-radius:10px;padding:38px 20px;text-align:center;cursor:pointer;background:var(--hv)}.drop:hover,.drop.on{border-color:var(--pr);background:var(--infob)}.drop b{display:block;font-size:15px}.drop span{color:var(--mu)}.pv{margin-top:14px}.pv pre{margin:8px 0 0;padding:12px;background:var(--bg);border-radius:7px;font:12px/1.6 var(--mono);white-space:pre-wrap;max-height:220px;overflow:auto}#fe{margin:12px 0 0;color:var(--bad)}.acts{margin-top:18px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.chips button{padding:6px 12px;border-radius:7px;border:1px solid var(--ln);background:var(--sf);cursor:pointer;text-align:left}.chips button span{display:block;color:var(--mu);font-size:12px}
-.chips button[aria-pressed=true]{border-color:var(--pr);background:var(--infob)}
-textarea{width:100%;height:280px;resize:vertical;border:1px solid var(--ln);border-radius:7px;padding:12px;background:var(--bg);font:12px/1.65 var(--mono)}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}.fld label{display:block;color:var(--mu);font-size:13px;margin-bottom:4px}
-.acts{display:flex;justify-content:flex-end;gap:10px}.empty{padding:44px 20px;text-align:center;color:var(--mu)}.empty b{display:block;color:var(--ink);margin-bottom:4px}
-@media(max-width:860px){.app{display:block}aside{position:static;height:auto;flex-direction:row;align-items:center}.ws{border:0;padding:14px}nav{display:flex;padding:0;flex:1}.sf{border:0;padding:8px 14px}.main{padding:20px 16px}.kpis,.sum,.g3{grid-template-columns:1fr 1fr}.bar{flex-wrap:wrap}.card{overflow-x:auto}}
-</style></head><body>
-<div class="app">
- <aside><div class="ws">Ledgerwise</div>
-  <nav><a href="#/" id="n0">Audits</a><a href="#/new" id="n1">New audit</a></nav>
-  <div class="sf" id="cfg"></div></aside>
- <div class="main"><div class="wrap" id="view"></div></div>
-</div>
-<script>
-const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const usd=n=>(n<0?'-':'')+'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-const pl=(n,w)=>`${n} ${w}${n===1?'':'s'}`,short=(v,n=80)=>{const s=typeof v==='string'?v:JSON.stringify(v);return s.length>n?s.slice(0,n)+'…':s};
-const fd=d=>new Date(d+'T00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),ft=t=>new Date(t).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'});
-const CAT={MATH_ERROR:'Arithmetic error',RATE_CREEP:'Rate above contract',HOURS_CAP:'Hours over monthly cap',SUBTOTAL_MISMATCH:'Subtotal mismatch',DISCOUNT_ERROR:'Discount error',TAX_ERROR:'Tax error',TOTAL_MISMATCH:'Total mismatch',UNKNOWN_ITEM:'Service not in contract'};
-const AG={ingestion:'Ingestion agent',forensic_auditor:'Forensic auditor',policy_critic:'Policy critic',resolution_dispute:'Resolution agent',resolution_ledger:'Resolution agent'};
-const NEXT={ingestion:'Forensic auditor is checking every figure against the contract…',forensic_auditor:'Policy critic is reviewing the findings…',policy_critic:'Resolution agent is preparing the outcome…'};
-const BD={running:['In progress','info'],approved:['Approved','ok'],violations:['Violations','bad'],review:['Needs review','wn'],failed:['Failed','bad']};
-let runs=[];try{runs=JSON.parse(localStorage.lw||'[]')}catch{}
-const save=()=>{try{localStorage.lw=JSON.stringify(runs.slice(0,40))}catch{}};
-const exp=r=>r.invoice&&r.expected?+(r.invoice.total_claimed-r.expected.total).toFixed(2):0;
-const kind=r=>r.status==='running'?'running':r.status==='failed'?'failed':r.verdict==='APPROVED_FOR_PAYMENT'?'approved':exp(r)>0?'violations':'review';
-const badge=k=>`<span class="badge ${BD[k][1]}">${BD[k][0]}</span>`;
-const cfg={q:'',f:'',raw:'',name:'',size:0};
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Ledgerwise</title>
+    <link rel="icon" href="data:,">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Base Canvas & Surfaces */
+            --bg: #F8F5F0;
+            /* Warm Ivory background */
+            --sf: #FFFFFF;
+            /* Pure surface card background */
+            --ink: #2B211E;
+            /* Deep espresso/charcoal for soft high-contrast text */
+            --mu: #7D7068;
+            /* Muted warm stone for secondary copy */
+            --ln: #EAE4DD;
+            /* Soft warm line/border */
+            --hv: #F2ECE3;
+            /* Subtle warm hover tint */
+
+            /* Primary Accent */
+            --pr: #C85A32;
+            /* Terracotta accent for buttons/focus */
+            --prx: #FFFFFF;
+            /* Crisp white text over primary */
+
+            /* Menu / Sidebar (Terracotta Theme) */
+            --side: #9E3F1F;
+            /* Deep, grounding terracotta */
+            --sidet: #F7DDD4;
+            /* Creamy soft peach text for legibility */
+            --sideh: #853317;
+            /* Richer rust for active/hover states */
+
+            /* Semantic - Success (Warm Sage) */
+            --ok: #2D6343;
+            --okb: #E4EFE7;
+            --okl: #7AA88B;
+
+            /* Semantic - Error / Destructive (Burnt Crimson) */
+            --bad: #A82C24;
+            --badb: #FBE5E3;
+            --badl: #DC837D;
+
+            /* Semantic - Warning (Earthy Amber) */
+            --wn: #8F5B00;
+            --wnb: #FDF1D8;
+            --wnl: #E2B35B;
+
+            /* Semantic - Info (Dusty Slate Teal to balance warm tones) */
+            --info: #2B6674;
+            --infob: #E1EFF3;
+            --infol: #7AB5C4;
+
+            /* Typography */
+            --ui: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            --mono: ui-monospace, 'Cascadia Code', Consolas, Menlo, monospace;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 14px/1.5 var(--ui);
+            -webkit-font-smoothing: antialiased
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+            color: inherit
+        }
+
+        a {
+            color: var(--pr);
+            text-decoration: none
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--pr);
+            outline-offset: 2px
+        }
+
+        .app {
+            display: grid;
+            grid-template-columns: 240px minmax(0, 1fr);
+            min-height: 100vh
+        }
+
+        aside {
+            background: var(--side);
+            color: var(--sidet);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh
+        }
+
+        .ws {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 22px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px
+        }
+
+        nav {
+            padding: 14px 10px;
+            flex: 1
+        }
+
+        nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 38px;
+            padding: 0 12px;
+            border-radius: 7px;
+            color: var(--sidet);
+            font-weight: 500;
+            margin-bottom: 2px
+        }
+
+        nav a[aria-current=page] {
+            background: var(--sideh);
+            color: #fff
+        }
+
+        nav a:hover {
+            color: #fff
+        }
+
+        .sf {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            font-size: 12.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px
+        }
+
+        .sf:empty {
+            display: none
+        }
+
+        .sf button {
+            background: none;
+            border: 0;
+            color: var(--sidet);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 2px 4px
+        }
+
+        .main {
+            padding: 36px 40px 60px
+        }
+
+        .wrap {
+            max-width: 1020px;
+            margin: 0 auto
+        }
+
+        .wrap.n {
+            max-width: 820px
+        }
+
+        .ph {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 22px
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -.01em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .sub {
+            margin: 2px 0 0;
+            color: var(--mu)
+        }
+
+        h2 {
+            margin: 28px 0 10px;
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            padding: 0 16px;
+            border-radius: 7px;
+            border: 1px solid var(--ln);
+            background: var(--sf);
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--ink)
+        }
+
+        .btn.pri {
+            background: var(--pr);
+            border-color: var(--pr);
+            color: var(--prx)
+        }
+
+        .btn.sm {
+            height: 30px;
+            padding: 0 12px;
+            font-size: 13px
+        }
+
+        .btn:disabled {
+            opacity: .5
+        }
+
+        .card {
+            background: var(--sf);
+            border: 1px solid var(--ln);
+            border-radius: 10px;
+            overflow: hidden
+        }
+
+        .pad {
+            padding: 20px
+        }
+
+        .kpis {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 22px
+        }
+
+        .kpi {
+            padding: 16px 18px
+        }
+
+        .kpi span {
+            color: var(--mu);
+            font-size: 13px
+        }
+
+        .kpi b {
+            display: block;
+            font-size: 26px;
+            font-weight: 600;
+            margin-top: 6px;
+            font-variant-numeric: tabular-nums
+        }
+
+        .bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px
+        }
+
+        .bar input,
+        .bar select,
+        .fld input,
+        .fld select {
+            height: 38px;
+            padding: 0 12px;
+            border: 1px solid var(--ln);
+            border-radius: 7px;
+            background: var(--sf);
+            color: var(--ink);
+            width: 100%
+        }
+
+        .bar input {
+            max-width: 280px
+        }
+
+        .bar select {
+            width: auto
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-variant-numeric: tabular-nums
+        }
+
+        th {
+            padding: 12px 18px;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: var(--mu);
+            text-align: left;
+            border-bottom: 1px solid var(--ln);
+            background: var(--hv)
+        }
+
+        td {
+            padding: 13px 18px;
+            border-bottom: 1px solid var(--ln)
+        }
+
+        tr:last-child td {
+            border: 0
+        }
+
+        .r {
+            text-align: right
+        }
+
+        tr.go {
+            cursor: pointer
+        }
+
+        tr.go:hover td {
+            background: var(--hv)
+        }
+
+        .go td:first-child a {
+            font-weight: 600
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 1px 8px;
+            border: 1px solid;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 20px;
+            white-space: nowrap
+        }
+
+        .badge.ok {
+            background: var(--okb);
+            border-color: var(--okl);
+            color: var(--ok)
+        }
+
+        .badge.bad {
+            background: var(--badb);
+            border-color: var(--badl);
+            color: var(--bad)
+        }
+
+        .badge.wn {
+            background: var(--wnb);
+            border-color: var(--wnl);
+            color: var(--wn)
+        }
+
+        .badge.info {
+            background: var(--infob);
+            border-color: var(--infol);
+            color: var(--info)
+        }
+
+        .badge.mu {
+            background: var(--hv);
+            border-color: var(--ln);
+            color: var(--mu)
+        }
+
+        .ban {
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid;
+            margin-bottom: 18px;
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .ban.ok {
+            background: var(--okb);
+            border-color: var(--okl);
+            color: var(--ok)
+        }
+
+        .ban.bad {
+            background: var(--badb);
+            border-color: var(--badl);
+            color: var(--bad)
+        }
+
+        .ban.wn {
+            background: var(--wnb);
+            border-color: var(--wnl);
+            color: var(--wn)
+        }
+
+        .ban.info {
+            background: var(--infob);
+            border-color: var(--infol);
+            color: var(--info)
+        }
+
+        .sum {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            padding: 18px 20px
+        }
+
+        .sum span {
+            display: block;
+            color: var(--mu);
+            font-size: 13px
+        }
+
+        .sum b {
+            font-weight: 500;
+            font-size: 15px
+        }
+
+        .fr {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 14px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--ln);
+            align-items: start
+        }
+
+        .fr:last-child {
+            border: 0
+        }
+
+        .fr p {
+            margin: 2px 0 0;
+            color: var(--mu);
+            font-size: 13px
+        }
+
+        .fr.dim {
+            opacity: .7
+        }
+
+        .amt {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums
+        }
+
+        .chip {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 0 7px;
+            border-radius: 99px;
+            background: var(--hv);
+            border: 1px solid var(--ln);
+            font-size: 12px;
+            color: var(--ink);
+            font-weight: 500
+        }
+
+        details summary {
+            cursor: pointer;
+            color: var(--mu);
+            font-size: 12.5px;
+            margin-top: 4px
+        }
+
+        .neg {
+            color: var(--bad);
+            font-weight: 600
+        }
+
+        .tot td {
+            font-weight: 600
+        }
+
+        pre.mail {
+            white-space: pre-wrap;
+            margin: 0;
+            padding: 18px 20px;
+            font: 13px/1.7 var(--ui)
+        }
+
+        .hd {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--ln);
+            font-weight: 600
+        }
+
+        .act {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--ln)
+        }
+
+        .act:last-child {
+            border: 0
+        }
+
+        .act>div {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px
+        }
+
+        .act time {
+            color: var(--mu);
+            font-size: 12.5px;
+            white-space: nowrap
+        }
+
+        .act b {
+            font-weight: 600
+        }
+
+        .calls {
+            margin-top: 8px;
+            border: 1px solid var(--ln);
+            border-radius: 7px;
+            max-height: 240px;
+            overflow: auto
+        }
+
+        .call {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) minmax(0, auto);
+            gap: 12px;
+            padding: 5px 10px;
+            border-bottom: 1px solid var(--ln);
+            font: 12px/1.5 var(--mono)
+        }
+
+        .call:last-child {
+            border: 0
+        }
+
+        .call .fn {
+            color: var(--pr);
+            font-weight: 600
+        }
+
+        .call .ar {
+            color: var(--mu);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .call .rs {
+            text-align: right;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        .spin {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--infol);
+            border-top-color: var(--info);
+            border-radius: 50%;
+            animation: s .8s linear infinite;
+            margin-right: 8px;
+            vertical-align: -1px
+        }
+
+        @keyframes s {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        @media(prefers-reduced-motion:reduce) {
+            .spin {
+                animation: none
+            }
+        }
+
+        .drop {
+            display: block;
+            border: 1.5px dashed var(--ln);
+            border-radius: 10px;
+            padding: 38px 20px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--hv)
+        }
+
+        .drop:hover,
+        .drop.on {
+            border-color: var(--pr);
+            background: var(--infob)
+        }
+
+        .drop b {
+            display: block;
+            font-size: 15px
+        }
+
+        .drop span {
+            color: var(--mu)
+        }
+
+        .pv {
+            margin-top: 14px
+        }
+
+        .pv pre {
+            margin: 8px 0 0;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: 7px;
+            font: 12px/1.6 var(--mono);
+            white-space: pre-wrap;
+            max-height: 220px;
+            overflow: auto
+        }
+
+        #fe {
+            margin: 12px 0 0;
+            color: var(--bad)
+        }
+
+        .acts {
+            margin-top: 18px
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px
+        }
+
+        .chips button {
+            padding: 6px 12px;
+            border-radius: 7px;
+            border: 1px solid var(--ln);
+            background: var(--sf);
+            cursor: pointer;
+            text-align: left
+        }
+
+        .chips button span {
+            display: block;
+            color: var(--mu);
+            font-size: 12px
+        }
+
+        .chips button[aria-pressed=true] {
+            border-color: var(--pr);
+            background: var(--infob)
+        }
+
+        textarea {
+            width: 100%;
+            height: 280px;
+            resize: vertical;
+            border: 1px solid var(--ln);
+            border-radius: 7px;
+            padding: 12px;
+            background: var(--bg);
+            font: 12px/1.65 var(--mono)
+        }
+
+        .g3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin: 16px 0
+        }
+
+        .fld label {
+            display: block;
+            color: var(--mu);
+            font-size: 13px;
+            margin-bottom: 4px
+        }
+
+        .acts {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px
+        }
+
+        .empty {
+            padding: 44px 20px;
+            text-align: center;
+            color: var(--mu)
+        }
+
+        .empty b {
+            display: block;
+            color: var(--ink);
+            margin-bottom: 4px
+        }
+
+        @media(max-width:860px) {
+            .app {
+                display: block
+            }
+
+            aside {
+                position: static;
+                height: auto;
+                flex-direction: row;
+                align-items: center
+            }
+
+            .ws {
+                border: 0;
+                padding: 14px
+            }
+
+            nav {
+                display: flex;
+                padding: 0;
+                flex: 1
+            }
+
+            .sf {
+                border: 0;
+                padding: 8px 14px
+            }
+
+            .main {
+                padding: 20px 16px
+            }
+
+            .kpis,
+            .sum,
+            .g3 {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .bar {
+                flex-wrap: wrap
+            }
+
+            .card {
+                overflow-x: auto
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <aside>
+            <div class="ws">Ledgerwise</div>
+            <nav><a href="#/" id="n0">Audits</a><a href="#/new" id="n1">New audit</a></nav>
+            <div class="sf" id="cfg"></div>
+        </aside>
+        <div class="main">
+            <div class="wrap" id="view"></div>
+        </div>
+    </div>
+    <script>
+        const $ = s => document.querySelector(s), esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        const usd = n => (n < 0 ? '-' : '') + '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const pl = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`, short = (v, n = 80) => { const s = typeof v === 'string' ? v : JSON.stringify(v); return s.length > n ? s.slice(0, n) + '…' : s };
+        const fd = d => new Date(d + 'T00:00').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }), ft = t => new Date(t).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const CAT = { MATH_ERROR: 'Arithmetic error', RATE_CREEP: 'Rate above contract', HOURS_CAP: 'Hours over monthly cap', SUBTOTAL_MISMATCH: 'Subtotal mismatch', DISCOUNT_ERROR: 'Discount error', TAX_ERROR: 'Tax error', TOTAL_MISMATCH: 'Total mismatch', UNKNOWN_ITEM: 'Service not in contract' };
+        const AG = { ingestion: 'Ingestion agent', forensic_auditor: 'Forensic auditor', policy_critic: 'Policy critic', resolution_dispute: 'Resolution agent', resolution_ledger: 'Resolution agent' };
+        const NEXT = { ingestion: 'Forensic auditor is checking every figure against the contract…', forensic_auditor: 'Policy critic is reviewing the findings…', policy_critic: 'Resolution agent is preparing the outcome…' };
+        const BD = { running: ['In progress', 'info'], approved: ['Approved', 'ok'], violations: ['Violations', 'bad'], review: ['Needs review', 'wn'], failed: ['Failed', 'bad'] };
+        let runs = []; try { runs = JSON.parse(localStorage.lw || '[]') } catch { }
+        const save = () => { try { localStorage.lw = JSON.stringify(runs.slice(0, 40)) } catch { } };
+        const exp = r => r.invoice && r.expected ? +(r.invoice.total_claimed - r.expected.total).toFixed(2) : 0;
+        const kind = r => r.status === 'running' ? 'running' : r.status === 'failed' ? 'failed' : r.verdict === 'APPROVED_FOR_PAYMENT' ? 'approved' : exp(r) > 0 ? 'violations' : 'review';
+        const badge = k => `<span class="badge ${BD[k][1]}">${BD[k][0]}</span>`;
+        const cfg = { q: '', f: '', raw: '', name: '', size: 0 };
 
 
-function route(){const[a,b]=location.hash.slice(1).split('/').filter(Boolean);$('#n0').removeAttribute('aria-current');$('#n1').removeAttribute('aria-current');
- if(a==='new'){$('#n1').setAttribute('aria-current','page');newView()}else if(a==='run'&&runs.find(r=>r.id===b)){$('#n0').setAttribute('aria-current','page');detail(b)}else{$('#n0').setAttribute('aria-current','page');list()}}
-addEventListener('hashchange',route);
+        function route() {
+            const [a, b] = location.hash.slice(1).split('/').filter(Boolean); $('#n0').removeAttribute('aria-current'); $('#n1').removeAttribute('aria-current');
+            if (a === 'new') { $('#n1').setAttribute('aria-current', 'page'); newView() } else if (a === 'run' && runs.find(r => r.id === b)) { $('#n0').setAttribute('aria-current', 'page'); detail(b) } else { $('#n0').setAttribute('aria-current', 'page'); list() }
+        }
+        addEventListener('hashchange', route);
 
-function rowsHTML(){const q=cfg.q.toLowerCase(),rs=runs.filter(r=>(!cfg.f||kind(r)===cfg.f)&&(!q||((r.invoice?r.invoice.invoice_number+r.invoice.vendor_name:r.file||'')).toLowerCase().includes(q)));
- return rs.map(r=>{const v=r.invoice;return `<tr class="go" data-id="${r.id}"><td><a href="#/run/${r.id}">${esc(v?v.invoice_number:(r.file||'Unreadable file'))}</a></td><td>${v?esc(v.vendor_name):'—'}</td><td>${v?fd(v.invoice_date):ft(r.ts).slice(0,6)}</td><td>${badge(kind(r))}</td><td class="r">${v?usd(v.total_claimed):'—'}</td><td class="r" aria-hidden="true">›</td></tr>`}).join('')
- ||`<tr><td colspan="6"><div class="empty"><b>${runs.length?'No audits match your filters':'No audits yet'}</b>${runs.length?'Try a different search or status.':'Upload an invoice to check it against its contract.'}</div></td></tr>`}
-function list(){const d=runs.filter(r=>r.invoice),n=k=>d.filter(r=>kind(r)===k).length;
- $('#view').innerHTML=`<div class="ph"><div><h1>Audits</h1><p class="sub">Invoices checked against vendor contracts</p></div><a class="btn pri" href="#/new">New audit</a></div>
- <div class="kpis"><div class="card kpi"><span>Audits run</span><b>${d.length}</b></div><div class="card kpi"><span>Need action</span><b style="color:var(--wn)">${n('violations')+n('review')}</b></div><div class="card kpi"><span>Approved</span><b style="color:var(--ok)">${n('approved')}</b></div><div class="card kpi"><span>Overbilling found</span><b style="color:var(--bad)">${usd(d.filter(r=>kind(r)==='violations').reduce((s,r)=>s+exp(r),0))}</b></div></div>
- <div class="bar"><input id="q" placeholder="Search invoice or vendor" aria-label="Search" value="${esc(cfg.q)}"><select id="f" aria-label="Status"><option value="">All statuses</option><option value="approved">Approved</option><option value="violations">Violations</option><option value="review">Needs review</option><option value="failed">Failed</option></select>${runs.length?'<button class="btn" id="clr" style="margin-left:auto">Clear history</button>':''}</div>
+        function rowsHTML() {
+            const q = cfg.q.toLowerCase(), rs = runs.filter(r => (!cfg.f || kind(r) === cfg.f) && (!q || ((r.invoice ? r.invoice.invoice_number + r.invoice.vendor_name : r.file || '')).toLowerCase().includes(q)));
+            return rs.map(r => { const v = r.invoice; return `<tr class="go" data-id="${r.id}"><td><a href="#/run/${r.id}">${esc(v ? v.invoice_number : (r.file || 'Unreadable file'))}</a></td><td>${v ? esc(v.vendor_name) : '—'}</td><td>${v ? fd(v.invoice_date) : ft(r.ts).slice(0, 6)}</td><td>${badge(kind(r))}</td><td class="r">${v ? usd(v.total_claimed) : '—'}</td><td class="r" aria-hidden="true">›</td></tr>` }).join('')
+                || `<tr><td colspan="6"><div class="empty"><b>${runs.length ? 'No audits match your filters' : 'No audits yet'}</b>${runs.length ? 'Try a different search or status.' : 'Upload an invoice to check it against its contract.'}</div></td></tr>`
+        }
+        function list() {
+            const d = runs.filter(r => r.invoice), n = k => d.filter(r => kind(r) === k).length;
+            $('#view').innerHTML = `<div class="ph"><div><h1>Audits</h1><p class="sub">Invoices checked against vendor contracts</p></div><a class="btn pri" href="#/new">New audit</a></div>
+ <div class="kpis"><div class="card kpi"><span>Audits run</span><b>${d.length}</b></div><div class="card kpi"><span>Need action</span><b style="color:var(--wn)">${n('violations') + n('review')}</b></div><div class="card kpi"><span>Approved</span><b style="color:var(--ok)">${n('approved')}</b></div><div class="card kpi"><span>Overbilling found</span><b style="color:var(--bad)">${usd(d.filter(r => kind(r) === 'violations').reduce((s, r) => s + exp(r), 0))}</b></div></div>
+ <div class="bar"><input id="q" placeholder="Search invoice or vendor" aria-label="Search" value="${esc(cfg.q)}"><select id="f" aria-label="Status"><option value="">All statuses</option><option value="approved">Approved</option><option value="violations">Violations</option><option value="review">Needs review</option><option value="failed">Failed</option></select>${runs.length ? '<button class="btn" id="clr" style="margin-left:auto">Clear history</button>' : ''}</div>
  <div class="card"><table><thead><tr><th>Invoice number</th><th>Vendor</th><th>Date</th><th>Status</th><th class="r">Total</th><th></th></tr></thead><tbody id="rows">${rowsHTML()}</tbody></table></div>`;
- $('#f').value=cfg.f;$('#clr')?.addEventListener('click',()=>{if(confirm('Remove all audits from this list?')){runs=[];save();list()}});const re=()=>$('#rows').innerHTML=rowsHTML();$('#q').oninput=e=>{cfg.q=e.target.value;re()};$('#f').onchange=e=>{cfg.f=e.target.value;re()};
- $('#rows').onclick=e=>{const t=e.target.closest('tr.go');if(t&&!e.target.closest('a'))location.hash='#/run/'+t.dataset.id}}
+            $('#f').value = cfg.f; $('#clr')?.addEventListener('click', () => { if (confirm('Remove all audits from this list?')) { runs = []; save(); list() } }); const re = () => $('#rows').innerHTML = rowsHTML(); $('#q').oninput = e => { cfg.q = e.target.value; re() }; $('#f').onchange = e => { cfg.f = e.target.value; re() };
+            $('#rows').onclick = e => { const t = e.target.closest('tr.go'); if (t && !e.target.closest('a')) location.hash = '#/run/' + t.dataset.id }
+        }
 
-function newView(){const idle='Drag a file here or click to browse. PDF or text.';
- $('#view').innerHTML=`<div class="wrap n"><div class="ph"><div><h1>New audit</h1><p class="sub">Upload a vendor invoice to check it against the contract</p></div></div>
- <div class="card pad"><label class="drop" id="drop" tabindex="0"><input id="file" type="file" accept=".txt,.pdf,text/plain,application/pdf" hidden><b id="dn">${cfg.name?esc(cfg.name):'Choose an invoice file'}</b><span id="ds">${cfg.name?(cfg.size/1024).toFixed(1)+' KB. Click to replace.':idle}</span></label>
- <p id="fe" role="alert" hidden></p>${cfg.raw?`<details class="pv"><summary>Preview extracted text</summary><pre>${esc(cfg.raw.slice(0,1500))}</pre></details>`:''}
- <div class="acts"><a class="btn" href="#/">Cancel</a><button class="btn pri" id="go" ${cfg.raw?'':'disabled'}>Run audit</button></div></div></div>`;
- const pick=async f=>{if(!f)return;$('#fe').hidden=true;$('#dn').textContent=f.name;$('#ds').textContent='Reading file…';
-  try{let t;if(/\.pdf$/i.test(f.name)){const r=await fetch('/api/extract',{method:'POST',body:f});const j=await r.json();if(!r.ok)throw new Error(j.error);t=j.text}else t=await f.text();
-   if(!t.trim())throw new Error('This file is empty.');cfg.raw=t;cfg.name=f.name;cfg.size=f.size;newView()}
-  catch(e){cfg.raw='';cfg.name='';newView();$('#fe').textContent=e.message;$('#fe').hidden=false}};
- const d=$('#drop');$('#file').onchange=e=>pick(e.target.files[0]);
- d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#file').click()}};
- d.ondragover=e=>{e.preventDefault();d.classList.add('on')};d.ondragleave=()=>d.classList.remove('on');d.ondrop=e=>{e.preventDefault();d.classList.remove('on');pick(e.dataTransfer.files[0])};
- $('#go').onclick=start}
-function sumTxt(n,u,r){const tr=u.traces||[],inv=r.invoice;
- if(n==='ingestion')return `Read ${pl(inv.line_items.length,'line item')} from ${inv.invoice_number} using ${/^llm/.test(u.ingestion_method)?'AI extraction, figures verified against the source text':'the rule-based parser'}`;
- if(n==='forensic_auditor')return `Found ${pl((u.findings||[]).length,'discrepancy').replace('discrepancys','discrepancies')} across ${pl(tr.length,'exact check')}`;
- if(n==='policy_critic')return u.needs_reaudit?'Could not verify some lines, sent back to the auditor':`Confirmed ${(u.actionable||[]).length}, dismissed ${(u.suppressed||[]).length} as rounding`;
- if(n==='resolution_dispute')return `Drafted a dispute email citing ${[...new Set((r.actionable||[]).map(f=>f.clause).filter(Boolean))].join(', ')||'the contract'}`;
- return 'Approved for payment and added to the ledger'}
-function onEv(r,ev){if(ev.error){r.status='failed';r.error=ev.error}
- else if(ev.node){const{traces,...u}=ev.update;Object.assign(r,u);if(ev.node==='forensic_auditor')r.pass=(r.pass||0)+1;
-  r.steps.push({n:ev.node,txt:sumTxt(ev.node,ev.update,r),loop:ev.node==='policy_critic'&&u.needs_reaudit,calls:traces||[],t:Date.now(),pass:r.pass})}
- else if(ev.done)r.status='done';
- save();try{if(location.hash==='#/run/'+r.id)detail(r.id)}catch(e){console.error(e)}}
-async function start(){const r={id:Date.now().toString(36),ts:Date.now(),status:'running',steps:[],file:cfg.name},raw=cfg.raw;cfg.raw='';cfg.name='';
- runs.unshift(r);save();location.hash='#/run/'+r.id;
- try{const res=await fetch('/api/audit',{method:'POST',body:JSON.stringify({raw})});
-  const rd=res.body.getReader(),dc=new TextDecoder();let b='';
-  for(;;){const{done,value}=await rd.read();if(done)break;b+=dc.decode(value,{stream:true});let i;while((i=b.indexOf('\n'))>=0){const l=b.slice(0,i);b=b.slice(i+1);if(l.trim())onEv(r,JSON.parse(l))}}
- }catch(e){onEv(r,{error:e.message})}
- if(r.status==='running')onEv(r,{error:'The connection closed before the audit finished.'})}
+        function newView() {
+            const idle = 'Drag a file here or click to browse. PDF or text.';
+            $('#view').innerHTML = `<div class="wrap n"><div class="ph"><div><h1>New audit</h1><p class="sub">Upload a vendor invoice to check it against the contract</p></div></div>
+ <div class="card pad"><label class="drop" id="drop" tabindex="0"><input id="file" type="file" accept=".txt,.pdf,text/plain,application/pdf" hidden><b id="dn">${cfg.name ? esc(cfg.name) : 'Choose an invoice file'}</b><span id="ds">${cfg.name ? (cfg.size / 1024).toFixed(1) + ' KB. Click to replace.' : idle}</span></label>
+ <p id="fe" role="alert" hidden></p>${cfg.raw ? `<details class="pv"><summary>Preview extracted text</summary><pre>${esc(cfg.raw.slice(0, 1500))}</pre></details>` : ''}
+ <div class="acts"><a class="btn" href="#/">Cancel</a><button class="btn pri" id="go" ${cfg.raw ? '' : 'disabled'}>Run audit</button></div></div></div>`;
+            const pick = async f => {
+                if (!f) return; $('#fe').hidden = true; $('#dn').textContent = f.name; $('#ds').textContent = 'Reading file…';
+                try {
+                    let t; if (/\.pdf$/i.test(f.name)) { const r = await fetch('/api/extract', { method: 'POST', body: f }); const j = await r.json(); if (!r.ok) throw new Error(j.error); t = j.text } else t = await f.text();
+                    if (!t.trim()) throw new Error('This file is empty.'); cfg.raw = t; cfg.name = f.name; cfg.size = f.size; newView()
+                }
+                catch (e) { cfg.raw = ''; cfg.name = ''; newView(); $('#fe').textContent = e.message; $('#fe').hidden = false }
+            };
+            const d = $('#drop'); $('#file').onchange = e => pick(e.target.files[0]);
+            d.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('#file').click() } };
+            d.ondragover = e => { e.preventDefault(); d.classList.add('on') }; d.ondragleave = () => d.classList.remove('on'); d.ondrop = e => { e.preventDefault(); d.classList.remove('on'); pick(e.dataTransfer.files[0]) };
+            $('#go').onclick = start
+        }
+        function sumTxt(n, u, r) {
+            const tr = u.traces || [], inv = r.invoice;
+            if (n === 'ingestion') return `Read ${pl(inv.line_items.length, 'line item')} from ${inv.invoice_number} using ${/^llm/.test(u.ingestion_method) ? 'AI extraction, figures verified against the source text' : 'the rule-based parser'}`;
+            if (n === 'forensic_auditor') return `Found ${pl((u.findings || []).length, 'discrepancy').replace('discrepancys', 'discrepancies')} across ${pl(tr.length, 'exact check')}`;
+            if (n === 'policy_critic') return u.needs_reaudit ? 'Could not verify some lines, sent back to the auditor' : `Confirmed ${(u.actionable || []).length}, dismissed ${(u.suppressed || []).length} as rounding`;
+            if (n === 'resolution_dispute') return `Drafted a dispute email citing ${[...new Set((r.actionable || []).map(f => f.clause).filter(Boolean))].join(', ') || 'the contract'}`;
+            return 'Approved for payment and added to the ledger'
+        }
+        function onEv(r, ev) {
+            if (ev.error) { r.status = 'failed'; r.error = ev.error }
+            else if (ev.node) {
+                const { traces, ...u } = ev.update; Object.assign(r, u); if (ev.node === 'forensic_auditor') r.pass = (r.pass || 0) + 1;
+                r.steps.push({ n: ev.node, txt: sumTxt(ev.node, ev.update, r), loop: ev.node === 'policy_critic' && u.needs_reaudit, calls: traces || [], t: Date.now(), pass: r.pass })
+            }
+            else if (ev.done) r.status = 'done';
+            save(); try { if (location.hash === '#/run/' + r.id) detail(r.id) } catch (e) { console.error(e) }
+        }
+        async function start() {
+            const r = { id: Date.now().toString(36), ts: Date.now(), status: 'running', steps: [], file: cfg.name }, raw = cfg.raw; cfg.raw = ''; cfg.name = '';
+            runs.unshift(r); save(); location.hash = '#/run/' + r.id;
+            try {
+                const res = await fetch('/api/audit', { method: 'POST', body: JSON.stringify({ raw }) });
+                const rd = res.body.getReader(), dc = new TextDecoder(); let b = '';
+                for (; ;) { const { done, value } = await rd.read(); if (done) break; b += dc.decode(value, { stream: true }); let i; while ((i = b.indexOf('\n')) >= 0) { const l = b.slice(0, i); b = b.slice(i + 1); if (l.trim()) onEv(r, JSON.parse(l)) } }
+            } catch (e) { onEv(r, { error: e.message }) }
+            if (r.status === 'running') onEv(r, { error: 'The connection closed before the audit finished.' })
+        }
 
-const callHTML=t=>`<div class="call"><span class="fn">${esc(t.tool)}</span><span class="ar" title="${esc(JSON.stringify(t.args))}">${esc(Object.entries(t.args||{}).map(([k,v])=>k+'='+short(v,40)).join(', '))}</span><span class="rs" title="${esc(JSON.stringify(t.result))}">${esc(short(t.result,48))}</span></div>`;
-const CL={'Contractual Violation':['Violation','bad'],'Needs Manual Review':['Review','wn'],'Informational: Rounding Variance':['Rounding','mu']};
-const fnd=f=>{const c=CL[f.classification]||['',''],m=f.classification.startsWith('Info');return `<div class="fr ${m?'dim':''}"><span class="badge ${c[1]}">${c[0]}</span><div><b>${CAT[f.category]||f.category}</b>${f.clause?`<span class="chip">${esc(f.clause)}</span>`:''}<p>${esc(m?f.rationale:f.description)} <span>(${esc(f.line_ref)})</span></p>${f.clause_text&&!m?`<details><summary>Contract wording</summary><p>${esc(f.clause_text)}</p></details>`:''}</div><span class="amt">${f.delta>0?'+':''}${usd(f.delta)}</span></div>`};
-function detail(id){const r=runs.find(x=>x.id===id),inv=r.invoice,k=kind(r),ex=r.expected,e=exp(r),act=r.actionable||[],sup=r.suppressed||[];
- let ban='';if(k==='running')ban=`<div class="ban info"><span class="spin"></span>Audit in progress. Agents are working through the invoice.</div>`;
- else if(k==='failed')ban=`<div class="ban bad" role="alert">The audit stopped: ${esc(r.error||'unknown error')}.</div>`;
- else if(k==='approved')ban=`<div class="ban ok">Approved for payment, due ${fd(r.ledger_record.due_date)}. ${(r.suppressed||[]).length?pl(sup.length,'rounding variance')+' dismissed.':''}</div>`;
- else if(k==='violations')ban=`<div class="ban bad"><b>${usd(e)} overbilled.</b> ${pl(act.length,'finding')} need action before this invoice is paid.</div>`;
- else ban=`<div class="ban wn">${pl(act.length,'line item')} can’t be verified against the contract and need manual review.</div>`;
- const flags=i=>(r.findings||[]).filter(f=>f.line_ref.startsWith(`Line ${i+1}:`)&&!f.classification.startsWith('Info')).map(f=>`<span class="badge bad">${CAT[f.category]}</span>`).join(' ');
- const rec=inv&&ex?[['Subtotal',inv.subtotal_claimed,ex.subtotal,1],['Discount',inv.discount_claimed,ex.discount,-1],['Tax',inv.tax_claimed,ex.tax,1],['Total',inv.total_claimed,ex.total,1]]:[];
- const last=r.steps[r.steps.length-1];
- $('#view').innerHTML=`<div class="wrap n"><div class="ph"><div><h1>${inv?esc(inv.invoice_number):'Audit in progress'} ${badge(k)}</h1><p class="sub">${inv?esc(inv.vendor_name):'Reading invoice…'}</p></div>${r.report_md?'<button class="btn" id="dl">Download report</button>':''}</div>${ban}
- ${inv&&ex?`<div class="card sum"><div><span>Invoice date</span><b>${fd(inv.invoice_date)}</b></div><div><span>Invoiced</span><b>${usd(inv.total_claimed)}</b></div><div><span>Per contract</span><b>${usd(ex.total)}</b></div><div><span>Overpaid</span><b class="${e>0?'neg':''}">${e>0?usd(e):'—'}</b></div></div>`:''}
- ${r.findings?`<h2>Findings</h2><div class="card">${act.map(fnd).join('')||'<div class="empty"><b>No violations</b>Every figure matches the contract.</div>'}${sup.map(fnd).join('')}</div>`:''}
- ${inv?`<h2>Line items</h2><div class="card"><table><thead><tr><th>Description</th><th class="r">Hours</th><th class="r">Rate</th><th class="r">Amount</th><th>Flags</th></tr></thead><tbody>${inv.line_items.map((l,i)=>`<tr><td>${esc(l.description)}</td><td class="r">${l.quantity}</td><td class="r">${usd(l.unit_rate)}</td><td class="r">${usd(l.line_total_claimed)}</td><td>${flags(i)}</td></tr>`).join('')}</tbody></table></div>`:''}
- ${ex?`<h2>Reconciliation</h2><div class="card"><table><thead><tr><th></th><th class="r">Invoiced</th><th class="r">Per contract</th><th class="r">Overpaid</th></tr></thead><tbody>${rec.map(([n,a,b,s],i)=>{const d=+((a-b)*s).toFixed(2);return `<tr class="${i==3?'tot':''}"><td>${n}</td><td class="r">${usd(a)}</td><td class="r">${usd(b)}</td><td class="r ${d>0?'neg':''}">${d?usd(d):'—'}</td></tr>`}).join('')}</tbody></table></div>`:''}
- ${r.dispute_email?`<h2>Dispute email</h2><div class="card"><div class="hd">Draft for ${esc(inv.vendor_name)}<button class="btn sm" id="cp">Copy</button></div><pre class="mail">${esc(r.dispute_email)}</pre></div>`:''}
- ${r.ledger_record?`<h2>Approval record</h2><div class="card sum" style="grid-template-columns:repeat(3,1fr)">${['certificate_id','amount_approved','payment_terms','due_date','audited_at'].map(x=>`<div><span>${x.replace(/_/g,' ')}</span><b>${esc(x==='amount_approved'?usd(r.ledger_record[x]):r.ledger_record[x])}</b></div>`).join('')}</div>`:''}
- <h2>Activity</h2><div class="card">${r.steps.map(s=>`<div class="act"><div><span><b>${s.n==='forensic_auditor'&&s.pass>1?'Forensic auditor (second pass)':AG[s.n]}</b> ${esc(s.txt)}</span><time>${ft(s.t)}</time></div>${s.calls.length?`<details><summary>${pl(s.calls.length,'tool call')}</summary><div class="calls">${s.calls.map(callHTML).join('')}</div></details>`:''}</div>`).join('')}${k==='running'?`<div class="act"><span class="spin"></span>${last?(last.loop?'Forensic auditor is re-checking the unverified lines…':NEXT[last.n]||''):'Ingestion agent is reading the invoice…'}</div>`:''}</div></div>`;
- $('#cp')?.addEventListener('click',ev=>{navigator.clipboard.writeText(r.dispute_email);ev.target.textContent='Copied'});
- $('#dl')?.addEventListener('click',()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r.report_md],{type:'text/markdown'}));a.download=inv.invoice_number+'-report.md';a.click()})}
+        const callHTML = t => `<div class="call"><span class="fn">${esc(t.tool)}</span><span class="ar" title="${esc(JSON.stringify(t.args))}">${esc(Object.entries(t.args || {}).map(([k, v]) => k + '=' + short(v, 40)).join(', '))}</span><span class="rs" title="${esc(JSON.stringify(t.result))}">${esc(short(t.result, 48))}</span></div>`;
+        const CL = { 'Contractual Violation': ['Violation', 'bad'], 'Needs Manual Review': ['Review', 'wn'], 'Informational: Rounding Variance': ['Rounding', 'mu'] };
+        const fnd = f => { const c = CL[f.classification] || ['', ''], m = f.classification.startsWith('Info'); return `<div class="fr ${m ? 'dim' : ''}"><span class="badge ${c[1]}">${c[0]}</span><div><b>${CAT[f.category] || f.category}</b>${f.clause ? `<span class="chip">${esc(f.clause)}</span>` : ''}<p>${esc(m ? f.rationale : f.description)} <span>(${esc(f.line_ref)})</span></p>${f.clause_text && !m ? `<details><summary>Contract wording</summary><p>${esc(f.clause_text)}</p></details>` : ''}</div><span class="amt">${f.delta > 0 ? '+' : ''}${usd(f.delta)}</span></div>` };
+        function detail(id) {
+            const r = runs.find(x => x.id === id), inv = r.invoice, k = kind(r), ex = r.expected, e = exp(r), act = r.actionable || [], sup = r.suppressed || [];
+            let ban = ''; if (k === 'running') ban = `<div class="ban info"><span class="spin"></span>Audit in progress. Agents are working through the invoice.</div>`;
+            else if (k === 'failed') ban = `<div class="ban bad" role="alert">The audit stopped: ${esc(r.error || 'unknown error')}.</div>`;
+            else if (k === 'approved') ban = `<div class="ban ok">Approved for payment, due ${fd(r.ledger_record.due_date)}. ${(r.suppressed || []).length ? pl(sup.length, 'rounding variance') + ' dismissed.' : ''}</div>`;
+            else if (k === 'violations') ban = `<div class="ban bad"><b>${usd(e)} overbilled.</b> ${pl(act.length, 'finding')} need action before this invoice is paid.</div>`;
+            else ban = `<div class="ban wn">${pl(act.length, 'line item')} can’t be verified against the contract and need manual review.</div>`;
+            const flags = i => (r.findings || []).filter(f => f.line_ref.startsWith(`Line ${i + 1}:`) && !f.classification.startsWith('Info')).map(f => `<span class="badge bad">${CAT[f.category]}</span>`).join(' ');
+            const rec = inv && ex ? [['Subtotal', inv.subtotal_claimed, ex.subtotal, 1], ['Discount', inv.discount_claimed, ex.discount, -1], ['Tax', inv.tax_claimed, ex.tax, 1], ['Total', inv.total_claimed, ex.total, 1]] : [];
+            const last = r.steps[r.steps.length - 1];
+            $('#view').innerHTML = `<div class="wrap n"><div class="ph"><div><h1>${inv ? esc(inv.invoice_number) : 'Audit in progress'} ${badge(k)}</h1><p class="sub">${inv ? esc(inv.vendor_name) : 'Reading invoice…'}</p></div>${r.report_md ? '<button class="btn" id="dl">Download report</button>' : ''}</div>${ban}
+ ${inv && ex ? `<div class="card sum"><div><span>Invoice date</span><b>${fd(inv.invoice_date)}</b></div><div><span>Invoiced</span><b>${usd(inv.total_claimed)}</b></div><div><span>Per contract</span><b>${usd(ex.total)}</b></div><div><span>Overpaid</span><b class="${e > 0 ? 'neg' : ''}">${e > 0 ? usd(e) : '—'}</b></div></div>` : ''}
+ ${r.findings ? `<h2>Findings</h2><div class="card">${act.map(fnd).join('') || '<div class="empty"><b>No violations</b>Every figure matches the contract.</div>'}${sup.map(fnd).join('')}</div>` : ''}
+ ${inv ? `<h2>Line items</h2><div class="card"><table><thead><tr><th>Description</th><th class="r">Hours</th><th class="r">Rate</th><th class="r">Amount</th><th>Flags</th></tr></thead><tbody>${inv.line_items.map((l, i) => `<tr><td>${esc(l.description)}</td><td class="r">${l.quantity}</td><td class="r">${usd(l.unit_rate)}</td><td class="r">${usd(l.line_total_claimed)}</td><td>${flags(i)}</td></tr>`).join('')}</tbody></table></div>` : ''}
+ ${ex ? `<h2>Reconciliation</h2><div class="card"><table><thead><tr><th></th><th class="r">Invoiced</th><th class="r">Per contract</th><th class="r">Overpaid</th></tr></thead><tbody>${rec.map(([n, a, b, s], i) => { const d = +((a - b) * s).toFixed(2); return `<tr class="${i == 3 ? 'tot' : ''}"><td>${n}</td><td class="r">${usd(a)}</td><td class="r">${usd(b)}</td><td class="r ${d > 0 ? 'neg' : ''}">${d ? usd(d) : '—'}</td></tr>` }).join('')}</tbody></table></div>` : ''}
+ ${r.dispute_email ? `<h2>Dispute email</h2><div class="card"><div class="hd">Draft for ${esc(inv.vendor_name)}<button class="btn sm" id="cp">Copy</button></div><pre class="mail">${esc(r.dispute_email)}</pre></div>` : ''}
+ ${r.ledger_record ? `<h2>Approval record</h2><div class="card sum" style="grid-template-columns:repeat(3,1fr)">${['certificate_id', 'amount_approved', 'payment_terms', 'due_date', 'audited_at'].map(x => `<div><span>${x.replace(/_/g, ' ')}</span><b>${esc(x === 'amount_approved' ? usd(r.ledger_record[x]) : r.ledger_record[x])}</b></div>`).join('')}</div>` : ''}
+ <h2>Activity</h2><div class="card">${r.steps.map(s => `<div class="act"><div><span><b>${s.n === 'forensic_auditor' && s.pass > 1 ? 'Forensic auditor (second pass)' : AG[s.n]}</b> ${esc(s.txt)}</span><time>${ft(s.t)}</time></div>${s.calls.length ? `<details><summary>${pl(s.calls.length, 'tool call')}</summary><div class="calls">${s.calls.map(callHTML).join('')}</div></details>` : ''}</div>`).join('')}${k === 'running' ? `<div class="act"><span class="spin"></span>${last ? (last.loop ? 'Forensic auditor is re-checking the unverified lines…' : NEXT[last.n] || '') : 'Ingestion agent is reading the invoice…'}</div>` : ''}</div></div>`;
+            $('#cp')?.addEventListener('click', ev => { navigator.clipboard.writeText(r.dispute_email); ev.target.textContent = 'Copied' });
+            $('#dl')?.addEventListener('click', () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([r.report_md], { type: 'text/markdown' })); a.download = inv.invoice_number + '-report.md'; a.click() })
+        }
 
-(()=>{let c=0;runs.forEach(r=>{if(r.status==='running'){r.status='failed';r.error='This audit was interrupted. Run it again.';c=1}});if(c)save();route();
- fetch('/api/config').then(r=>r.json()).then(c=>{$('#cfg').textContent=c.ai?'':'AI key missing. Using the built-in parser.'}).catch(()=>{})})();
-</script></body></html>
+        (() => {
+            let c = 0; runs.forEach(r => { if (r.status === 'running') { r.status = 'failed'; r.error = 'This audit was interrupted. Run it again.'; c = 1 } }); if (c) save(); route();
+            fetch('/api/config').then(r => r.json()).then(c => { $('#cfg').textContent = c.ai ? '' : 'AI key missing. Using the built-in parser.' }).catch(() => { })
+        })();
+    </script>
+</body>
+
+</html>
